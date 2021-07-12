@@ -1,0 +1,131 @@
+## Ory Kratos Configuration
+#  https://www.ory.sh/kratos/docs/reference/configuration/
+#  kratos/driver/config/.schema/config.schema.json
+version: v0.6.3-alpha.1
+
+identity:
+  default_schema_url: file:///etc/config/kratos/identity.schema.json
+
+dsn: ENV-DSN
+
+serve:
+  public:
+    base_url: http://127.0.0.1:4433/
+    cors:
+      enabled: true
+  admin:
+    base_url: http://kratos:4434/
+
+selfservice:
+  methods:
+    # password for signing up with an email / username and password
+    password:
+      enabled: true
+    # oidc for signing up using a social sign in provider such as Google or Facebook
+    oidc:
+      enabled: false
+    # profile for updating an identity's traits
+    profile:
+      enabled: true
+    # link for
+    # 1. performing account recovery (also known as password reset) by
+    #    sending an email containing a recovery link to the user
+    # 2. performing verification of email addresses
+    link:
+      enabled: true
+
+  default_browser_return_url: http://127.0.0.1:4455/
+
+  whitelisted_return_urls:
+    - http://127.0.0.1:4455
+
+  flows:
+    registration:
+      lifespan: 10m
+      ui_url: http://127.0.0.1:4455/auth/registration
+      after:
+        password:
+          hooks:
+            - hook: session
+
+    login:
+      lifespan: 10m
+      ui_url: http://127.0.0.1:4455/auth/login
+
+    logout:
+      after:
+        default_browser_return_url: http://127.0.0.1:4455/auth/login
+
+    verification:
+      enabled: true
+      lifespan: 15m
+      ui_url: http://127.0.0.1:4455/verify
+
+    recovery:
+      enabled: true
+      lifespan: 15m
+      ui_url: http://127.0.0.1:4455/recovery
+
+    settings:
+      lifespan: 15m
+      # Sessions older than a minute requires the user to sign in again before
+      # the password is changed.
+      privileged_session_max_age: 1m
+      ui_url: http://127.0.0.1:4455/settings
+
+    error:
+      ui_url: http://127.0.0.1:4455/error
+
+# tracing:
+#   service_name: Ory Kratos
+#   provider: jaeger
+
+log:
+  level: debug
+  format: json
+  leak_sensitive_values: false
+
+secrets:
+  cookie:
+    - ENV-SECRETS_COOKIE
+
+hashers:
+  algorithm: argon2
+  argon2:
+    iterations: 2
+    parallelism: 1
+    salt_length: 16
+    key_length: 16
+    expected_duration: 500ms
+    expected_deviation: 500ms
+    dedicated_memory: 1GB
+    memory: 128MB
+
+session:
+  lifespan: 1h
+  cookie:
+    name: "ory_kratos_session"
+    persistent: true
+    path: "/"
+    same_site: Strict
+    domain: ""
+
+dev: false
+help: false
+
+# disable anonymized telemetry reports
+sqa-opt-out: true
+# disable expose the metrics
+expose-metrics-port: 0
+
+config:
+  - ""
+
+# run the mail courier in the background
+watch-courier: true
+
+courier:
+  smtp:
+    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true
+    from_name: kratos
+    from_address: no-reply@ory.kratos.sh
