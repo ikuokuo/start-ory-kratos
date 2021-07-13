@@ -4,9 +4,9 @@ services:
   kratos-selfservice-ui-node:
     image: oryd/kratos-selfservice-ui-node:v0.6.3-alpha.1
     ports:
-      - "4455:4455"
+      - "3000:3000"
     environment:
-      - PORT=4455
+      - PORT=3000
       - SECURITY_MODE=
       - KRATOS_PUBLIC_URL=http://kratos:4433/
       - KRATOS_ADMIN_URL=http://kratos:4434/
