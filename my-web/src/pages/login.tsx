@@ -1,8 +1,8 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosResponse } from "axios";
-import { SelfServiceLoginFlow } from "@ory/kratos-client";
-import { Row, Col, Card, Form, Button, Divider } from "antd";
+import { SelfServiceLoginFlow, UiText } from "@ory/kratos-client";
+import { Alert, AlertProps, Button, Card, Col, Divider, Form, Row } from "antd";
 
 import { authPublicApi } from "../api/auth";
 import * as ui from "../api/ui";
@@ -56,6 +56,16 @@ export default class Login extends React.Component<
       <div className="page">
         <div className="container" style={{ flex: "0 1 360px" }}>
           <Card title="Login" bordered={false}>
+            {this.state.flow.ui.messages &&
+              this.state.flow.ui.messages.map((m: UiText, index) => (
+                <Alert
+                  key={index}
+                  message={m.text}
+                  type={m.type as AlertProps["type"]}
+                  style={{ marginBottom: 16 }}
+                  showIcon
+                />
+              ))}
             <Form
               name="register"
               encType="application/x-www-form-urlencoded"

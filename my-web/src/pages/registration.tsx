@@ -4,8 +4,9 @@ import { AxiosResponse } from "axios";
 import {
   SelfServiceRegistrationFlow,
   SuccessfulSelfServiceRegistrationWithoutBrowser,
+  UiText,
 } from "@ory/kratos-client";
-import { Card, Form, FormInstance } from "antd";
+import { Alert, AlertProps, Card, Form, FormInstance } from "antd";
 
 import { authPublicApi } from "../api/auth";
 import * as ui from "../api/ui";
@@ -66,6 +67,16 @@ export default class Registration extends React.Component<
       <div className="page">
         <div className="container" style={{ flex: "0 1 360px" }}>
           <Card title="Register new account" bordered={false}>
+            {this.state.flow.ui.messages &&
+              this.state.flow.ui.messages.map((m: UiText, index) => (
+                <Alert
+                  key={index}
+                  message={m.text}
+                  type={m.type as AlertProps["type"]}
+                  style={{ marginBottom: 16 }}
+                  showIcon
+                />
+              ))}
             <Form
               name="register"
               ref={this.formRef}
