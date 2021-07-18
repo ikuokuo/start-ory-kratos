@@ -5,7 +5,6 @@ services:
     image: oryd/kratos:v0.6.3-alpha.1
     environment:
       - DSN=postgres://kratos:secret@postgresd:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
-      - SECRETS_COOKIE=UO4I4iWzJwbLhq2hfd38uzv5DyoGm9Bh
     volumes:
       - type: bind
         source: ./config
@@ -27,6 +26,7 @@ services:
       - DSN=postgres://kratos:secret@postgresd:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
       - SECRETS_COOKIE=UO4I4iWzJwbLhq2hfd38uzv5DyoGm9Bh
       - LOG_LEVEL=trace
+      # - LOG_LEAK_SENSITIVE_VALUES=true
     command: serve -c /etc/config/kratos/kratos.yml --dev --watch-courier
     volumes:
       - type: bind

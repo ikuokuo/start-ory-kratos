@@ -13,6 +13,22 @@ serve:
     base_url: http://127.0.0.1:4433/
     cors:
       enabled: true
+      # debug: true
+      allowed_origins:
+        - http://127.0.0.1:3000
+      allowed_methods:
+        - POST
+        - GET
+        - PUT
+        - PATCH
+        - DELETE
+      allowed_headers:
+        - Authorization
+        - Content-Type
+        - Cookie
+      exposed_headers:
+        - Content-Type
+        - Set-Cookie
   admin:
     base_url: http://127.0.0.1:4434/
 
@@ -44,6 +60,7 @@ selfservice:
       lifespan: 10m
       ui_url: http://127.0.0.1:3000/auth/registration
       after:
+        default_browser_return_url: http://127.0.0.1:3000
         password:
           hooks:
             - hook: session
@@ -60,6 +77,8 @@ selfservice:
       enabled: true
       lifespan: 15m
       ui_url: http://127.0.0.1:3000/verify
+      after:
+        default_browser_return_url: http://127.0.0.1:3000
 
     recovery:
       enabled: true
@@ -85,9 +104,8 @@ log:
   format: json
   leak_sensitive_values: false
 
-secrets:
-  cookie:
-    - ENV-SECRETS_COOKIE
+# secrets:
+#   cookie:
 
 hashers:
   algorithm: argon2
