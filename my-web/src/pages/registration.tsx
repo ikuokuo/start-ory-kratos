@@ -42,7 +42,9 @@ export default class Registration extends React.Component<
 
     // Verify the client's registration flow.
     authPublicApi
-      .getSelfServiceRegistrationFlow(flowId)
+      .getSelfServiceRegistrationFlow(flowId, undefined, {
+        withCredentials: true,
+      })
       .then((res: AxiosResponse<SelfServiceRegistrationFlow>) => {
         if (utils.assertResponse(res)) {
           utils.redirectToSelfService("/self-service/registration/browser");

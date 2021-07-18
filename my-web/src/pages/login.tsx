@@ -34,7 +34,9 @@ export default class Login extends React.Component<
     }
 
     authPublicApi
-      .getSelfServiceLoginFlow(flowId)
+      .getSelfServiceLoginFlow(flowId, undefined, {
+        withCredentials: true,
+      })
       .then((res: AxiosResponse<SelfServiceLoginFlow>) => {
         if (utils.assertResponse(res)) {
           utils.redirectToSelfService("/self-service/login/browser");
