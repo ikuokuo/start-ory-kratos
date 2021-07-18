@@ -2,8 +2,8 @@ import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosResponse } from "axios";
 import {
-  RegistrationFlow,
-  RegistrationViaApiResponse,
+  SelfServiceRegistrationFlow,
+  SuccessfulSelfServiceRegistrationWithoutBrowser,
 } from "@ory/kratos-client";
 import { Card, Form, FormInstance } from "antd";
 
@@ -15,7 +15,7 @@ import "../styles/page.scss";
 
 type RegistrationState = {
   flowId?: string;
-  flow?: RegistrationFlow;
+  flow?: SelfServiceRegistrationFlow;
 };
 
 export default class Registration extends React.Component<
@@ -43,7 +43,7 @@ export default class Registration extends React.Component<
     // Verify the client's registration flow.
     authPublicApi
       .getSelfServiceRegistrationFlow(flowId)
-      .then((res: AxiosResponse<RegistrationFlow>) => {
+      .then((res: AxiosResponse<SelfServiceRegistrationFlow>) => {
         if (utils.assertResponse(res)) {
           utils.redirectToSelfService("/self-service/registration/browser");
           return;
@@ -107,9 +107,13 @@ export default class Registration extends React.Component<
           withCredentials: true,
         }
       )
-      .then((res: AxiosResponse<RegistrationViaApiResponse>) => {
-        console.log(res);
-      })
+      .then(
+        (
+          res: AxiosResponse<SuccessfulSelfServiceRegistrationWithoutBrowser>
+        ) => {
+          console.log(res);
+        }
+      )
       .catch((err) => {
         console.log(err);
       });

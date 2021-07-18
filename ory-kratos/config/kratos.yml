@@ -1,7 +1,7 @@
 ## Ory Kratos Configuration
 #  https://www.ory.sh/kratos/docs/reference/configuration/
 #  kratos/driver/config/.schema/config.schema.json
-version: v0.6.3-alpha.1
+version: v0.7.0-alpha.1
 
 identity:
   default_schema_url: file:///etc/config/kratos/identity.schema.json

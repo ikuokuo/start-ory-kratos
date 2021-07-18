@@ -1,7 +1,7 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AxiosResponse } from "axios";
-import { LoginFlow } from "@ory/kratos-client";
+import { SelfServiceLoginFlow } from "@ory/kratos-client";
 import { Row, Col, Card, Form, Button, Divider } from "antd";
 
 import { authPublicApi } from "../api/auth";
@@ -12,7 +12,7 @@ import "../styles/page.scss";
 
 type LoginState = {
   flowId?: string;
-  flow?: LoginFlow;
+  flow?: SelfServiceLoginFlow;
 };
 
 export default class Login extends React.Component<
@@ -35,7 +35,7 @@ export default class Login extends React.Component<
 
     authPublicApi
       .getSelfServiceLoginFlow(flowId)
-      .then((res: AxiosResponse<LoginFlow>) => {
+      .then((res: AxiosResponse<SelfServiceLoginFlow>) => {
         if (utils.assertResponse(res)) {
           utils.redirectToSelfService("/self-service/login/browser");
           return;
