@@ -1,6 +1,7 @@
 // https://github.com/ory/kratos-selfservice-ui-node/blob/master/src/helpers/ui.ts
 import { UiNode, UiNodeInputAttributes } from "@ory/kratos-client";
 import {
+  UiContainer,
   UiNodeAnchorAttributes,
   UiNodeTextAttributes,
   UiText,
@@ -129,4 +130,21 @@ export const toUiNodeAntd = (node: UiNode) => {
     }
   }
   return null;
+};
+
+export const submitViaForm = (ui: UiContainer, values: any): void => {
+  const form = document.createElement("form");
+  form.action = ui.action;
+  form.method = ui.method;
+  form.hidden = true;
+  for (const [k, v] of Object.entries(values)) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.name = k;
+    input.value = v as string;
+    form.appendChild(input);
+  }
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
 };

@@ -57,7 +57,7 @@ export default class Registration extends React.Component<
   render() {
     if (this.state.flow == null) return null;
     const onFinish = (values: any) => {
-      this.submitViaForm(values);
+      ui.submitViaForm(this.state.flow!.ui, values);
       // this.submitViaApi(values);
     };
     return (
@@ -82,25 +82,6 @@ export default class Registration extends React.Component<
         </div>
       </div>
     );
-  }
-
-  private submitViaForm(values: any): void {
-    const ui = this.state.flow!.ui;
-
-    const form = document.createElement("form");
-    form.action = ui.action;
-    form.method = ui.method;
-    form.hidden = true;
-    for (const [k, v] of Object.entries(values)) {
-      const input = document.createElement("input");
-      input.type = "text";
-      input.name = k;
-      input.value = v as string;
-      form.appendChild(input);
-    }
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
   }
 
   private submitViaApi(values: any): void {
