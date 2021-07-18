@@ -49,9 +49,10 @@ class App extends React.Component {
 
 class AppSider extends React.Component<RouteComponentProps> {
   render() {
-    const menuItemKey = this.props.location.pathname.substr(
+    let menuItemKey = this.props.location.pathname.substr(
       this.props.location.pathname.lastIndexOf("/") + 1
     );
+    if (menuItemKey.length === 0) menuItemKey = "dashboard";
     return (
       <Sider width={200} className="App-sider">
         <Menu defaultSelectedKeys={[menuItemKey]} style={{ height: "100%" }}>
