@@ -41,7 +41,7 @@ export const assertResponse = (res: any) => {
 export const redirectOnError = (err: AxiosError) => {
   if (!err.response) {
     console.log(`redirectOnError: response does not exist`);
-    return false;
+    return;
   }
 
   const res = err.response;
@@ -52,14 +52,19 @@ export const redirectOnError = (err: AxiosError) => {
     redirectTo("/auth/login");
   } else if (res.status === 404 || res.status === 410 || res.status === 403) {
     // Redirects to the specified URL if the error code is 404, 410, or 403
-    redirectTo(res.data.error.details.redirect_to);
+    if (res.data?.error?.details?.redirect_to != null) {
+      redirectTo(res.data.error.details.redirect_to);
+    } else if (res.data?.error != null) {
+      redirectTo(`/error?error=${JSON.stringify(res.data.error)}`);
+    } else {
+      console.log(`redirectOnError no error: ${JSON.stringify(res)}`);
+      redirectTo("/");
+    }
   } else if (res.status === 404) {
     // Redirects to error if the error code is 404
     redirectTo("/error");
   } else {
     console.log(`redirectOnError unknown: ${JSON.stringify(res)}`);
-    return false;
+    redirectTo("/");
   }
-
-  return true;
 };
