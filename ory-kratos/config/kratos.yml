@@ -144,6 +144,6 @@ watch-courier: true
 
 courier:
   smtp:
-    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true
+    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true&legacy_ssl=true
     from_name: kratos
     from_address: no-reply@ory.kratos.sh
