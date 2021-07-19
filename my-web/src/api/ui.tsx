@@ -86,7 +86,7 @@ export const toUiNodeAntd = (node: UiNode) => {
                 disabled={attrs.disabled}
                 block
               >
-                Sign up
+                {title}
               </Button>
             </Form.Item>
           );
