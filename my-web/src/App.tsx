@@ -18,7 +18,6 @@ import logo from "./logo.svg";
 import "./App.scss";
 
 import { authPublicApi } from "./api/auth";
-import * as utils from "./api/utils";
 
 const { Header, Sider, Content } = Layout;
 
@@ -42,7 +41,7 @@ class App extends React.Component<RouteComponentProps, AppHeaderState> {
     if (menuSelectedKey.length === 0) menuSelectedKey = "dashboard";
     this.setState({ menuSelectedKey: menuSelectedKey });
 
-    if (menuSelectedKey === "dashboard") {
+    if (["dashboard", "settings", "verify"].indexOf(menuSelectedKey) > -1) {
       authPublicApi
         .createSelfServiceLogoutFlowUrlForBrowsers(undefined, {
           withCredentials: true,
@@ -50,7 +49,9 @@ class App extends React.Component<RouteComponentProps, AppHeaderState> {
         .then((res: AxiosResponse<SelfServiceLogoutUrl>) => {
           this.setState({ logoutUrl: res.data.logout_url });
         })
-        .catch(utils.redirectOnError);
+        .catch((err) => {
+          // console.log(err);
+        });
     }
   }
 
