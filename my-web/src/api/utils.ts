@@ -32,27 +32,34 @@ export const assertResponse = (res: any) => {
 
   // `type` should either be 'browser' or 'api'. We do NOT need the API registration-flow
   // so something has clearly gone astray; restart the flow.
-  if (res.data.type !== "browser") return 1;
+  if (res.data.type && res.data.type !== "browser") return 1;
 
   // false
   return 0;
 };
 
-// Redirects to the specified URL if the error is an AxiosError with a 404, 410,
-// or 403 error code.
 export const redirectOnError = (err: AxiosError) => {
   if (!err.response) {
-    return;
+    console.log(`redirectOnError: response does not exist`);
+    return false;
   }
 
   const res = err.response;
+  // console.log(`redirectOnError: ${JSON.stringify(res)}`);
 
-  // console.log(`redirectOnError: ${JSON.stringify(res.data.error)}`);
-  if (res.status === 404 || res.status === 410 || res.status === 403) {
+  if (res.status === 401) {
+    // Redirects to login if the error code is 401
+    redirectTo("/auth/login");
+  } else if (res.status === 404 || res.status === 410 || res.status === 403) {
+    // Redirects to the specified URL if the error code is 404, 410, or 403
     redirectTo(res.data.error.details.redirect_to);
   } else if (res.status === 404) {
-    redirectTo(config.baseUrl);
+    // Redirects to error if the error code is 404
+    redirectTo("/error");
   } else {
     console.log(`redirectOnError unknown: ${JSON.stringify(res)}`);
+    return false;
   }
+
+  return true;
 };
