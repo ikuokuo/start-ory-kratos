@@ -38,9 +38,10 @@ export const assertResponse = (res: any) => {
   return 0;
 };
 
-export const redirectOnError = (err: AxiosError) => {
+export const redirectOnError = (err: AxiosError, endpoint = "/") => {
   if (!err.response) {
     console.log(`redirectOnError: response does not exist`);
+    redirectTo(endpoint);
     return;
   }
 
@@ -58,13 +59,13 @@ export const redirectOnError = (err: AxiosError) => {
       redirectTo(`/error?error=${JSON.stringify(res.data.error)}`);
     } else {
       console.log(`redirectOnError no error: ${JSON.stringify(res)}`);
-      redirectTo("/");
+      redirectTo(endpoint);
     }
   } else if (res.status === 404) {
     // Redirects to error if the error code is 404
     redirectTo("/error");
   } else {
     console.log(`redirectOnError unknown: ${JSON.stringify(res)}`);
-    redirectTo("/");
+    redirectTo(endpoint);
   }
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { Session } from "@ory/kratos-client";
 
 import { authPublicApi } from "../api/auth";
@@ -30,7 +30,7 @@ export default class Dashboard extends React.Component<{}, DashboardState> {
         // console.log(res);
         this.setState({ session: res.data });
       })
-      .catch(utils.redirectOnError);
+      .catch((err: AxiosError) => utils.redirectOnError(err, "/auth/login"));
   }
 
   render() {
