@@ -1,7 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Switch, Route, Link } from "react-router-dom";
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import { Layout, Menu } from "antd";
+import { AxiosResponse } from "axios";
+import { SelfServiceLogoutUrl } from "@ory/kratos-client";
+import { Button, Layout, Menu } from "antd";
+import { LogoutOutlined } from "@ant-design/icons";
 
 import Dashboard from "./pages/dashboard";
 import Error from "./pages/error";
@@ -14,48 +17,91 @@ import Verification from "./pages/verification";
 import logo from "./logo.svg";
 import "./App.scss";
 
+import { authPublicApi } from "./api/auth";
+import * as utils from "./api/utils";
+
 const { Header, Sider, Content } = Layout;
 
-class App extends React.Component {
+type AppHeaderState = {
+  menuSelectedKey: string;
+  logoutUrl?: string;
+};
+
+class App extends React.Component<RouteComponentProps, AppHeaderState> {
+  constructor(props: RouteComponentProps) {
+    super(props);
+    this.state = {
+      menuSelectedKey: "dashboard",
+    };
+  }
+
+  componentDidMount() {
+    let menuSelectedKey = this.props.location.pathname.substr(
+      this.props.location.pathname.lastIndexOf("/") + 1
+    );
+    if (menuSelectedKey.length === 0) menuSelectedKey = "dashboard";
+    this.setState({ menuSelectedKey: menuSelectedKey });
+
+    if (menuSelectedKey === "dashboard") {
+      authPublicApi
+        .createSelfServiceLogoutFlowUrlForBrowsers(undefined, {
+          withCredentials: true,
+        })
+        .then((res: AxiosResponse<SelfServiceLogoutUrl>) => {
+          this.setState({ logoutUrl: res.data.logout_url });
+        })
+        .catch(utils.redirectOnError);
+    }
+  }
+
   render() {
     return (
       <Layout className="App">
         <Header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <div>My Web</div>
+          <div style={{ flex: "auto" }}>My Web</div>
+          {this.state.logoutUrl && (
+            <Button
+              type="link"
+              shape="circle"
+              href={this.state.logoutUrl}
+              icon={<LogoutOutlined />}
+            />
+          )}
         </Header>
         <Layout>
-          <Router>
-            <AppSiderWithRouter />
-            <Content className="App-content">
-              <Switch>
-                <Route exact path="/" component={Dashboard} />
-                <Route path="/dashboard" component={Dashboard} />
-                <Route path="/auth/registration" component={Registration} />
-                <Route path="/auth/login" component={Login} />
-                <Route path="/recovery" component={Recovery} />
-                <Route path="/settings" component={Settings} />
-                <Route path="/verify" component={Verification} />
-                <Route path="/error" component={Error} />
-                <Route component={Error} />
-              </Switch>
-            </Content>
-          </Router>
+          <AppSider menuSelectedKey={this.state.menuSelectedKey} />
+          <Content className="App-content">
+            <Switch>
+              <Route exact path="/" component={Dashboard} />
+              <Route path="/dashboard" component={Dashboard} />
+              <Route path="/auth/registration" component={Registration} />
+              <Route path="/auth/login" component={Login} />
+              <Route path="/recovery" component={Recovery} />
+              <Route path="/settings" component={Settings} />
+              <Route path="/verify" component={Verification} />
+              <Route path="/error" component={Error} />
+              <Route component={Error} />
+            </Switch>
+          </Content>
         </Layout>
       </Layout>
     );
   }
 }
 
-class AppSider extends React.Component<RouteComponentProps> {
+type AppSiderProps = {
+  menuSelectedKey: string;
+};
+
+class AppSider extends React.Component<AppSiderProps> {
   render() {
-    let menuItemKey = this.props.location.pathname.substr(
-      this.props.location.pathname.lastIndexOf("/") + 1
-    );
-    if (menuItemKey.length === 0) menuItemKey = "dashboard";
     return (
       <Sider width={200} className="App-sider">
-        <Menu defaultSelectedKeys={[menuItemKey]} style={{ height: "100%" }}>
+        <Menu
+          defaultSelectedKeys={[this.props.menuSelectedKey]}
+          style={{ height: "100%" }}
+        >
           <Menu.Item key="dashboard">
             <Link to="/dashboard">Dashboard</Link>
           </Menu.Item>
@@ -83,6 +129,4 @@ class AppSider extends React.Component<RouteComponentProps> {
   }
 }
 
-const AppSiderWithRouter = withRouter(AppSider);
-
-export default App;
+export default withRouter(App);
