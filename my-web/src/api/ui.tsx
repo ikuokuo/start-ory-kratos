@@ -41,6 +41,13 @@ const getTitle = (n: UiNode): string => {
   return "";
 };
 
+export const onlyNodes = (nodes: Array<UiNode>, only?: string) => {
+  if (!only) {
+    return nodes;
+  }
+  return nodes.filter(({ group }) => group === only);
+};
+
 export const toUiNodeAntd = (node: UiNode) => {
   switch (node.type) {
     case "input": {
