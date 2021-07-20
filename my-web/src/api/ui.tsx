@@ -70,7 +70,10 @@ export const toUiNodeAntd = (node: UiNode) => {
               name={attrs.name}
               initialValue={attrs.value}
               rules={[
-                { required: true, message: "Please input your password!" },
+                {
+                  required: attrs.required,
+                  message: "Please input your password!",
+                },
                 { min: 6, message: "Password must be at least 6 chars long!" },
               ]}
               validateStatus={message?.type as ValidateStatus}
@@ -101,7 +104,7 @@ export const toUiNodeAntd = (node: UiNode) => {
           let rules;
           if (attrs.type === "email") {
             rules = [
-              { required: true, message: "Please input your email!" },
+              { required: attrs.required, message: "Please input your email!" },
               {
                 type: "email" as RuleType,
                 message: "The input is not valid email!",
@@ -109,7 +112,10 @@ export const toUiNodeAntd = (node: UiNode) => {
             ];
           } else if (attrs.name === "traits.username") {
             rules = [
-              { required: true, message: "Please input your username!" },
+              {
+                required: attrs.required,
+                message: "Please input your username!",
+              },
               {
                 pattern: RegExp(attrs.pattern!),
                 message:
