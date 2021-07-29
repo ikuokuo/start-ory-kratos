@@ -57,13 +57,13 @@ export const redirectOnError = (err: AxiosError, endpoint = "/") => {
       redirectTo(res.data.error.details.redirect_to);
     } else if (res.data?.error != null) {
       redirectTo(`/error?error=${JSON.stringify(res.data.error)}`);
+    } else if (res.status === 404) {
+      // Redirects to error if the error code is 404
+      redirectTo("/error?error=404 not found");
     } else {
       console.log(`redirectOnError no error: ${JSON.stringify(res)}`);
       redirectTo(endpoint);
     }
-  } else if (res.status === 404) {
-    // Redirects to error if the error code is 404
-    redirectTo("/error");
   } else {
     console.log(`redirectOnError unknown: ${JSON.stringify(res)}`);
     redirectTo(endpoint);
